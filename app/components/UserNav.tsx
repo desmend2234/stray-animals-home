@@ -42,9 +42,6 @@ function UserNav({ name, email, userImage }: iAppsProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link href='/sell'>Sell product</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
             <Link href='/settings'>Settings</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
