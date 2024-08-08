@@ -5,24 +5,31 @@ import { use, useEffect, useState } from 'react';
 
 function AnimalPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<any>(null);
-
+  const [loading, setLoading] = useState(false);
   async function getData() {
-    const response = await fetch(
-      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
-    );
-    const data = await response.json();
-    const newData = data?.filter(
-      (item: any) => item?.animal_subid === params.id
-    );
-    setData(newData);
+    try {
+      setLoading(true);
+      const response = await fetch(
+        'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
+      );
+      const data = await response.json();
+      const newData = data?.filter(
+        (item: any) => item?.animal_subid === params.id
+      );
+      setData(newData);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
   }
+
   useEffect(() => {
     getData();
   }, [params]);
 
   return (
     <section className='max-w-7xl mx-auto lg:flex lg:gap-x-8 lg:gap-y-10 xl:gap-x-16 px-4 lg:px-8 xs:flex-col'>
-      {data && data.length > 0 && (
+      {data && data.length > 0 && !loading ? (
         <>
           <div className='lg:grow'>
             <div className='lg:h-[40rem] relative flex items-center justify-center'>
@@ -100,6 +107,8 @@ function AnimalPage({ params }: { params: { id: string } }) {
             </ul>
           </div>
         </>
+      ) : (
+        <div className='text-center'>資料讀取中...🥹</div>
       )}
     </section>
   );
