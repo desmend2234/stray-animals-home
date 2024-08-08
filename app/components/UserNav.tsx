@@ -35,7 +35,7 @@ function UserNav({ name, email, userImage }: iAppsProps) {
           <div className='flex flex-col space-y-2'>
             <p className='text-sm font-medium leading-none'>{name}</p>
             <p className='text-xs leading-none text-muted-foreground'>
-              james@gmail.com
+              {email}
             </p>
           </div>
         </DropdownMenuLabel>

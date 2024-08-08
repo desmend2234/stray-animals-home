@@ -7,7 +7,6 @@ import React from 'react';
 export const navBarLinks = [
   { id: 1, name: '首頁', href: '/' },
   { id: 2, name: '我想認養', href: '/animalHome' },
-  { id: 3, name: 'Contact', href: '/contact' },
 ];
 function NavLinks() {
   const location = usePathname();
