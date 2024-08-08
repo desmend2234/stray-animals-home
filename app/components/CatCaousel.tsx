@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/carousel';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import { LoadingAnimalCarousel } from './AnimalCard';
 
@@ -18,23 +19,29 @@ export async function CatCaousel() {
     const response = await fetch(
       'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
     );
-    const data = await response.json();
+    const data = await response?.json();
     const newData = data?.slice(0, 50);
     return newData;
   }
   const data = await getData();
   const cats = data?.filter((animal: any) => animal?.animal_kind === '貓');
-
-  return (
-    <div className='mt-12'>
-      <div className='grid grid-cols-1 gap-10 mt-4'>
-        <div>
-          <div className='rounded-lg flex'>
-            <AnimalRow item={cats} />
-          </div>{' '}
-        </div>
-      </div>
+  const FallbackComponent = () => (
+    <div>
+      <p>Something went wrong while loading the carousel.</p>
     </div>
+  );
+  return (
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
+      <div className='mt-12'>
+        <div className='grid grid-cols-1 gap-10 mt-4'>
+          <div>
+            <div className='rounded-lg flex'>
+              <AnimalRow item={cats} />
+            </div>{' '}
+          </div>
+        </div>
+      </div>{' '}
+    </ErrorBoundary>
   );
 }
 
