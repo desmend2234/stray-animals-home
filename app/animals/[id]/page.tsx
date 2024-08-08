@@ -1,10 +1,11 @@
 'use client';
 import { DirectionAwareHover } from '@/app/components/direction-aware-hover';
 import Link from 'next/link';
-import React from 'react';
+import { use, useEffect, useState } from 'react';
 
 function AnimalPage({ params }: { params: { id: string } }) {
-  const [data, setData] = React.useState<any>(null);
+  const [data, setData] = useState<any>(null);
+
   async function getData() {
     const response = await fetch(
       'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
@@ -15,6 +16,9 @@ function AnimalPage({ params }: { params: { id: string } }) {
     );
     setData(newData);
   }
+  useEffect(() => {
+    getData();
+  }, [params]);
 
   return (
     <section className='max-w-7xl mx-auto lg:flex lg:gap-x-8 lg:gap-y-10 xl:gap-x-16 px-4 lg:px-8 xs:flex-col'>
