@@ -6,7 +6,8 @@ export async function GET() {
   try {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
-    if (!user || !user.id || user == null) throw new Error('Unauthorized');
+    if (!user || !user.id) throw new Error('Unauthorized');
+
     let dbUser = await prisma.user.findUnique({
       where: {
         id: user.id,
@@ -25,8 +26,8 @@ export async function GET() {
       });
     }
     return NextResponse.redirect('http://localhost:3000');
-  } catch (error) {
-    console.error('Error in GET /api/auth/creation:', error);
+  } catch (error: any) {
+    console.error('Error in GET /api/auth/creation:', error.message);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
