@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import React from 'react';
 import { Animal } from '../types';
@@ -13,9 +15,9 @@ import Link from 'next/link';
 import { LoadingAnimalCarousel } from './AnimalCard';
 import { ErrorBoundary } from 'react-error-boundary';
 
-const FallbackComponent = () => (
+const FallbackComponent = ({ error }: any) => (
   <div>
-    <p>Something went wrong while loading the carousel.</p>
+    <p>Something went wrong while loading the carousel.{error.message}</p>
   </div>
 );
 
