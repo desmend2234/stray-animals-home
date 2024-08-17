@@ -1,7 +1,5 @@
-'use client';
-
 import Image from 'next/image';
-import React from 'react';
+
 import { Animal } from '../types';
 import {
   Carousel,
@@ -13,25 +11,40 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { LoadingAnimalCarousel } from './AnimalCard';
+import next from 'next';
 
 export async function CatCaousel() {
+  // const [cats, setCats] = useState<Animal[]>([]);
+
   async function getData() {
     const response = await fetch(
-      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
+      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1',
+      { next: { revalidate: 360 } }
     );
+    // if (typeof window !== 'undefined') {
+    //   const cachedData = localStorage.getItem('catData');
+    //   if (cachedData) {
+    //     setCats(JSON.parse(cachedData));
+    //   } else {
+
+    //     localStorage.setItem('catData', JSON.stringify(newData));
+    //     // setCats(newData);
+    //   }
+    // }
     const data = await response?.json();
-    const newData = data?.slice(0, 50);
+    const newData = data?.slice(0, 20);
     return newData;
   }
-  const data = await getData();
-  const cats = data?.filter((animal: any) => animal?.animal_kind === '貓');
+  const cats = await getData();
+
+  const cat = cats?.filter((animal: any) => animal?.animal_kind === '貓');
 
   return (
     <div className='mt-12'>
       <div className='grid grid-cols-1 gap-10 mt-4'>
         <div>
           <div className='rounded-lg flex'>
-            <AnimalRow item={cats} />
+            <AnimalRow item={cat} />
           </div>{' '}
         </div>
       </div>
@@ -44,7 +57,7 @@ export function AnimalRow({ item }: { item: Animal[] }) {
     <>
       <Carousel className='w-full mx-auto'>
         <CarouselContent>
-          {item?.slice(0, 5)?.map((animal, index) => (
+          {item?.slice(0, 20)?.map((animal, index) => (
             <CarouselItem key={index} className='basis-1/2 md:basis-1/4'>
               <Link href={`/animals/${animal?.animal_subid}`}>
                 <div className='relative h-[230px]'>

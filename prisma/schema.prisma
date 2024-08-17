@@ -16,6 +16,8 @@ model User {
   lastName  String
   profileImage String
   Product  Product[]
+  favorites Favorite[]
+
 }
 
 model Product{
@@ -31,7 +33,19 @@ model Product{
   User User @relation(fields: [userId], references: [id])
   userId String
 }
+model Animal {
+  id     String   @id @default(uuid())
+  name   String
+  favorite Favorite[]
+}
 
+model Favorite {
+  id      String @id @default(uuid())
+  userId  String
+  animalId String
+  user    User   @relation(fields: [userId], references: [id])
+  favoriteAnimal  Animal @relation(fields: [animalId], references: [id])
+}
 enum CategoryTypes{
   template
   uiKit

@@ -1,13 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
-
 export function LoadingAnimalCard() {
   return (
     <div className='flex gap-6 flex-wrap justify-center'>
-      <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
       <Loading />
     </div>
   );

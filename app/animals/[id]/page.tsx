@@ -1,23 +1,48 @@
 'use client';
 import { DirectionAwareHover } from '@/app/components/direction-aware-hover';
 import Link from 'next/link';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { LoadingAnimalCard } from './loading';
+
+const CACHE_DURATION = 3600000; // 緩存持續時間，單位為毫秒 (例如 60 分鐘)
 
 function AnimalPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   async function getData() {
+    const cacheKey = `animalData_${params.id}`;
+    const cacheTimestampKey = `${cacheKey}_timestamp`;
+
+    const cacheData = localStorage.getItem(cacheKey);
+    const cacheTimestamp = localStorage.getItem(cacheTimestampKey);
+    const now = new Date().getTime();
+
     try {
       setLoading(true);
-      const response = await fetch(
-        'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
-      );
-      const data = await response.json();
-      const newData = data?.filter(
-        (item: any) => item?.animal_subid === params.id
-      );
-      setData(newData);
-      setLoading(false);
+      if (
+        cacheData &&
+        cacheTimestamp &&
+        now - parseInt(cacheTimestamp) < CACHE_DURATION
+      ) {
+        const pastData = JSON.parse(cacheData);
+        setData(pastData);
+        setLoading(false);
+        return;
+      } else {
+        const response = await fetch(
+          'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1',
+          { next: { revalidate: 360 } }
+        );
+        const data = await response.json();
+        const newData = data?.filter(
+          (item: any) => item?.animal_subid === params.id
+        );
+        localStorage.setItem(cacheKey, JSON.stringify(newData));
+        localStorage.setItem(cacheTimestampKey, now.toString());
+
+        setData(newData);
+        setLoading(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -108,7 +133,7 @@ function AnimalPage({ params }: { params: { id: string } }) {
           </div>
         </>
       ) : (
-        <div className='text-center'>資料讀取中...🥹</div>
+        <LoadingAnimalCard />
       )}
     </section>
   );

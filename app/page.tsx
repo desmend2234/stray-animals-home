@@ -1,8 +1,5 @@
 import Image from 'next/image';
-import Navbar from './components/Navbar';
-
 import { Suspense } from 'react';
-
 import Link from 'next/link';
 import { DogCaousel } from './components/DogCaousel';
 import { CatCaousel } from './components/CatCaousel';
@@ -54,6 +51,7 @@ export default function Home() {
       <Suspense fallback={<LoadingAnimalCarousel />}>
         <DogCaousel />
       </Suspense>
+
       <div className='md:flex md:items-center md:justify-between my-10'>
         <h2 className='text-2xl font-bold mb-2'>最新開放認養貓咪😻</h2>
         <Link

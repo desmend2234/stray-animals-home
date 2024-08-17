@@ -12,7 +12,6 @@ import UserNav from './UserNav';
 async function Navbar() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-
   return (
     <nav className='relative max-w-7xl w-full flex md:grid md:grid-cols-12 items-center pz-4 md:px-8 mx-auto py-7'>
       <div className='md:col-span-3 mx-auto'>

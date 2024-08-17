@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import React from 'react';
 import { Animal } from '../types';
@@ -15,23 +13,44 @@ import Link from 'next/link';
 import { LoadingAnimalCarousel } from './AnimalCard';
 
 export async function DogCaousel() {
+  // const [dogs, setDogs] = useState<Animal[]>([]);
+
   async function getData() {
     const response = await fetch(
-      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
+      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1',
+      { next: { revalidate: 360 } }
     );
-    const data = await response?.json();
-    const newData = data?.slice(0, 20);
+    const data = await response.json();
+    const newData = data.slice(0, 20);
     return newData;
+    // if (typeof window !== 'undefined') {
+    //   const cachedData = localStorage.getItem('dogData');
+
+    //   // if (cachedData) {
+    //   //   const parsedCachedData = JSON.parse(cachedData);
+    //   //   if (JSON.stringify(parsedCachedData) !== JSON.stringify(newData)) {
+    //   //     localStorage.setItem('dogData', JSON.stringify(newData));
+    //   //     // setDogs(newData);
+    //   //   } else {
+    //   //     setDogs(parsedCachedData);
+    //   //   }
+    //   // } else {
+    //   //   localStorage.setItem('dogData', JSON.stringify(newData));
+    //   //   setDogs(newData);
+    //   // }
+    // }
   }
-  const data = await getData();
-  const dogs = data?.filter((animal: any) => animal?.animal_kind === '狗');
+
+  const dogs = await getData();
+  // const data = await getData();
+  const dog = dogs?.filter((animal: any) => animal?.animal_kind === '狗');
 
   return (
     <div className='mt-12'>
       <div className='grid grid-cols-1 gap-10 mt-4'>
         <div>
           <div className='rounded-lg flex'>
-            <AnimalRow item={dogs} />
+            <AnimalRow item={dog} />
           </div>{' '}
         </div>
       </div>
@@ -44,7 +63,7 @@ export function AnimalRow({ item }: { item: Animal[] }) {
     <>
       <Carousel className='w-full mx-auto'>
         <CarouselContent>
-          {item?.slice(0, 5)?.map((animal, index) => (
+          {item?.slice(0, 20)?.map((animal, index) => (
             <CarouselItem
               className='basis-1/2 md:basis-1/4'
               key={animal?.animal_subid}

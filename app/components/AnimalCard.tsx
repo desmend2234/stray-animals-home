@@ -13,23 +13,49 @@ function AnimalCard() {
   const [category, setCategory] = useState<string | null>('all');
   const [loading, setLoading] = useState(false);
   const [dataLength, setDataLength] = useState(0);
+
+  const CACHE_DURATION = 600000; // 緩存持續時間，單位為毫秒 (例如 5 分鐘)
   async function getData(category: string | null) {
     setLoading(true);
-    const response = await fetch(
-      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
-    );
-    const rawData = await response.json();
-    let newData = rawData.slice(0, 40);
-    if (category && category !== 'All') {
-      newData = newData.filter(
-        (item: any) => item.animal_Variety.trim() == category
-      );
-    }
-    setDataLength(newData.length);
-    setData(newData);
-    setLoading(false);
-  }
 
+    const cacheKey = `animalData_${category}`;
+    const cacheTimestampKey = `${cacheKey}_timestamp`;
+
+    const cacheData = localStorage.getItem(cacheKey);
+    const cacheTimestamp = localStorage.getItem(cacheTimestampKey);
+
+    const now = new Date().getTime();
+
+    if (
+      cacheData &&
+      cacheTimestamp &&
+      now - parseInt(cacheTimestamp) < CACHE_DURATION
+    ) {
+      const pastData = JSON.parse(cacheData);
+      setData(pastData);
+      setDataLength(pastData.length);
+      setLoading(false);
+      return;
+    } else {
+      const response = await fetch(
+        'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
+      );
+      const rawData = await response.json();
+      let newData = rawData.slice(0, 600);
+      if (category && category !== 'All') {
+        newData = newData.filter(
+          (item: any) => item.animal_Variety.trim() == category
+        );
+      }
+      // 將獲取到的資料存入 localStorage
+      localStorage.setItem(cacheKey, JSON.stringify(newData));
+      localStorage.setItem(cacheTimestampKey, now.toString());
+
+      setDataLength(newData.length);
+      setData(newData);
+      setLoading(false);
+    }
+  }
   const params = useSearchParams();
 
   useEffect(() => {
@@ -41,7 +67,7 @@ function AnimalCard() {
   return (
     <>
       <div className='text-center mb-4'>
-        {!loading ? `總共有 ${dataLength} 筆資料` : '資料讀取中...🥹'}
+        {!loading ? `最新 ${dataLength} 筆資料` : '資料讀取中...🥹'}
       </div>
       {loading ? (
         <LoadingAnimalCard />
@@ -87,7 +113,7 @@ function AnimalCard() {
         </div>
       ) : (
         <div className='text-center text-gray-700 mt-4 text-2xl mb-4'>
-          沒有資料
+          沒有資料...
         </div>
       )}
     </>
