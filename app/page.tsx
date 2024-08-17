@@ -48,9 +48,8 @@ export default function Home() {
           查看更多 <span className='text-xl'>&rarr;</span>
         </Link>
       </div>
-      <Suspense fallback={<LoadingAnimalCarousel />}>
-        <DogCaousel />
-      </Suspense>
+      {/* <Suspense fallback={<LoadingAnimalCarousel />}> */}
+      <DogCaousel />
 
       <div className='md:flex md:items-center md:justify-between my-10'>
         <h2 className='text-2xl font-bold mb-2'>最新開放認養貓咪😻</h2>
@@ -61,9 +60,7 @@ export default function Home() {
           查看更多 <span className='text-xl'>&rarr;</span>
         </Link>
       </div>
-      <Suspense fallback={<LoadingAnimalCarousel />}>
-        <CatCaousel />
-      </Suspense>
+      <CatCaousel />
     </section>
   );
 }

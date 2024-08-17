@@ -128,6 +128,7 @@ export function LoadingAnimalCarousel() {
       <Loading />
       <Loading />
       <Loading />
+      <Loading />
     </div>
   );
 }

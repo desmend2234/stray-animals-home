@@ -9,10 +9,10 @@ export function LoadingAnimalCarousel() {
         <Loading />
         <Loading />
       </div>
-      <div className='flex lg:hidden gap-6 flex-wrap justify-center'>
+      {/* <div className='flex lg:hidden gap-6 flex-wrap justify-center'>
         <Loading />
         <Loading />
-      </div>
+      </div> */}
     </>
   );
 }
