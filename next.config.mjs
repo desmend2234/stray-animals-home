@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     domains: ['www.pet.gov.tw', 'asms.coa.gov.tw'],
+    unoptimized: true,
   },
 };
 
