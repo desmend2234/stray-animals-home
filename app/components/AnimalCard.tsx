@@ -41,7 +41,7 @@ function AnimalCard() {
         'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&IsTransData=1'
       );
       const rawData = await response.json();
-      let newData = rawData.slice(0, 600);
+      let newData = rawData.slice(0, 100);
       if (category && category !== 'All') {
         newData = newData.filter(
           (item: any) => item.animal_Variety.trim() == category

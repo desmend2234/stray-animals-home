@@ -5,10 +5,9 @@ import { unstable_noStore as noStore } from 'next/cache';
 
 export async function GET() {
   try {
-    noStore();
     const { getUser } = getKindeServerSession();
     const user = await getUser();
-    if (!user || !user.id) throw new Error('Unauthorized');
+    if (!user || user === null || !user.id) throw new Error('Unauthorized');
 
     let dbUser = await prisma.user.findUnique({
       where: {
@@ -30,9 +29,13 @@ export async function GET() {
   } catch (error: any) {
     console.error('Error in GET /api/auth/creation:', error.message);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Internal Server Error', message: error.message },
       { status: 500 }
     );
   }
-  return NextResponse.redirect('http://localhost:3000');
+  const redirectUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://stray-animals-home.vercel.app/';
+  return NextResponse.redirect(redirectUrl);
 }
